@@ -3,54 +3,79 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="theme-color" content="#111827">
+<meta name="theme-color" content="#101827">
+<meta name="description" content="Humanitas — pesquisa e organização de conhecimento em Ciências Humanas.">
 <link rel="manifest" href="manifest.json">
 <link rel="stylesheet" href="css/humanitas.css">
 <title>Humanitas — Ciências Humanas</title>
 <script type="module" src="https://pyscript.net/releases/2026.1.1/core.js"></script>
 </head>
 <body>
-<header>
-  <div class="brand">
-    <b>H</b>
-    <div><strong>Humanitas</strong><small>Sistema de Conhecimento em Ciências Humanas</small></div>
+<div class="app-shell">
+<header class="topbar">
+  <a class="brand" href="./" aria-label="Humanitas — início">
+    <span class="brand-mark" aria-hidden="true">H</span>
+    <span class="brand-copy">
+      <strong>Humanitas</strong>
+      <small>Sistema de Conhecimento em Ciências Humanas</small>
+    </span>
+  </a>
+  <div class="topbar-meta">
+    <span class="status-pill"><span class="status-dot"></span><span id="status" aria-live="polite">Pronto</span></span>
   </div>
-  <span id="status" aria-live="polite">Pronto</span>
 </header>
-
 <main>
-<section class="hero">
-  <h1>Pesquisar conhecimento</h1>
-  <p>Pesquisa por fontes acadêmicas e enciclopédicas, com roteador SLM opcional executado localmente no navegador.</p>
-
-  <div class="ai-control">
-    <button id="aiButton" type="button">Ativar IA local</button>
-    <span id="aiState" aria-live="polite">Desativada. A pesquisa normal não carrega o modelo.</span>
-  </div>
-
-  <form id="searchForm">
-    <label class="sr-only" for="query">Pesquisar conhecimento</label>
-    <div class="search">
-      <input id="query" required autocomplete="off" placeholder="Ex.: ação social em Max Weber">
-      <button type="submit">Pesquisar</button>
+  <section class="hero">
+    <div class="eyebrow"><span></span> Pesquisa em Ciências Humanas</div>
+    <h1>Encontre, conecte e explore conhecimento.</h1>
+    <p class="hero-copy">Pesquise conceitos, autores, obras e temas usando fontes acadêmicas, enciclopédicas e dados estruturados em uma única interface.</p>
+    <div class="search-panel">
+      <form id="searchForm">
+        <label class="sr-only" for="query">Pesquisar conhecimento</label>
+        <div class="search">
+          <span class="search-icon" aria-hidden="true">⌕</span>
+          <input id="query" required autocomplete="off" placeholder="Ex.: ação social em Max Weber">
+          <button type="submit">Pesquisar</button>
+        </div>
+      </form>
+      <nav id="chips" class="chips" aria-label="Áreas das Ciências Humanas">
+        <button type="button" data-q="Sociologia">Sociologia</button>
+        <button type="button" data-q="Filosofia">Filosofia</button>
+        <button type="button" data-q="História">História</button>
+        <button type="button" data-q="Ciência Política">Ciência Política</button>
+        <button type="button" data-q="Antropologia">Antropologia</button>
+        <button type="button" data-q="Geografia">Geografia</button>
+      </nav>
     </div>
-  </form>
-
-  <nav id="chips" aria-label="Áreas das Ciências Humanas">
-    <button type="button" data-q="Sociologia">Sociologia</button>
-    <button type="button" data-q="Filosofia">Filosofia</button>
-    <button type="button" data-q="História">História</button>
-    <button type="button" data-q="Ciência Política">Ciência Política</button>
-    <button type="button" data-q="Antropologia">Antropologia</button>
-    <button type="button" data-q="Geografia">Geografia</button>
-  </nav>
-</section>
-
-<section id="analysis" class="analysis hidden" aria-live="polite"></section>
-<section id="results" aria-live="polite"></section>
+    <div class="ai-control">
+      <div class="ai-symbol" aria-hidden="true">✦</div>
+      <div class="ai-copy">
+        <strong>Roteador de IA local</strong>
+        <span id="aiState" aria-live="polite">Desativado. A pesquisa normal não carrega o modelo.</span>
+      </div>
+      <button id="aiButton" type="button">Ativar IA local</button>
+    </div>
+  </section>
+  <section class="source-strip" aria-label="Fontes do Humanitas">
+    <div class="source-intro">
+      <span class="source-label">Fontes</span>
+      <strong>Quatro portas para o conhecimento</strong>
+    </div>
+    <div class="source-items">
+      <div class="source-item"><b>W</b><span><strong>Wikimedia</strong><small>Enciclopédia</small></span></div>
+      <div class="source-item"><b>D</b><span><strong>Wikidata</strong><small>Dados estruturados</small></span></div>
+      <div class="source-item"><b>O</b><span><strong>OpenAlex</strong><small>Literatura acadêmica</small></span></div>
+      <div class="source-item"><b>C</b><span><strong>Crossref</strong><small>Metadados bibliográficos</small></span></div>
+    </div>
+  </section>
+  <section id="analysis" class="analysis hidden" aria-live="polite"></section>
+  <section id="results" aria-live="polite"></section>
 </main>
-
-<footer>Humanitas • GitHub Pages • PWA • Wikimedia • Wikidata • OpenAlex • Crossref • SLM local</footer>
+<footer>
+  <div><strong>Humanitas</strong><span>Sistema de Conhecimento em Ciências Humanas</span></div>
+  <span>Pesquisa com fontes externas • PWA</span>
+</footer>
+</div>
 <script type="module" src="js/humanitas.js"></script>
 <script type="py" src="./python/humanitas.py"></script>
 </body>
