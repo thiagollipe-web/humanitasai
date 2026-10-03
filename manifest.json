@@ -1,1 +1,18 @@
-{"name":"Humanitas","short_name":"Humanitas","start_url":"./","display":"standalone","background_color":"#f4f6f8","theme_color":"#111827","lang":"pt-BR"}
+{
+  "name": "Humanitas — Ciências Humanas",
+  "short_name": "Humanitas",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#f4f6f8",
+  "theme_color": "#111827",
+  "lang": "pt-BR",
+  "icons": [
+    {
+      "src": "icons/humanitas.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
