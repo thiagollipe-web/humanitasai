@@ -7,7 +7,7 @@ Sistema de Conhecimento em Ciências Humanas.
 - HTML/CSS: interface PWA.
 - JavaScript: pesquisa, integração, ranking e chat.
 - PyScript/Python: análise linguística local.
-- Ollama Cloud: geração das respostas do chat.
+- Ollama Cloud: geração das respostas do chat (Gemma 4 31B Cloud).
 - Fontes: Wikimedia, Wikidata, OpenAlex e Crossref.
 
 ## Chat com referências
@@ -26,7 +26,7 @@ Crie as variáveis de ambiente:
 
 ```text
 OLLAMA_API_KEY=sua_chave_do_ollama
-OLLAMA_MODEL=gemma4:31b
+OLLAMA_MODEL=gemma4:31b-cloud
 ```
 
 A `OLLAMA_API_KEY` deve ser mantida em segredo e nunca colocada no HTML, JavaScript do navegador ou repositório.
