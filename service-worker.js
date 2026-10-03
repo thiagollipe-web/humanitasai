@@ -1,11 +1,9 @@
-const CACHE = "humanitas-v02";
+const CACHE = "humanitas-v03";
 const ASSETS = [
   "./",
   "./index.html",
   "./css/humanitas.css",
   "./js/humanitas.js",
-  "./js/ai/model.js",
-  "./js/ai/router.js",
   "./python/humanitas.py",
   "./data/knowledge.json",
   "./manifest.json",
