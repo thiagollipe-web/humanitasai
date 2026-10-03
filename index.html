@@ -28,7 +28,7 @@
   <section class="hero">
     <div class="eyebrow"><span></span> Pesquisa em Ciências Humanas</div>
     <h1>Encontre, conecte e explore conhecimento.</h1>
-    <p class="hero-copy">Pesquise conceitos, autores, obras e temas usando fontes acadêmicas, enciclopédicas e dados estruturados em uma única interface.</p>
+    <p class="hero-copy">Pesquise conceitos, autores, obras e temas. Depois converse com o Humanitas usando as referências encontradas.</p>
     <div class="search-panel">
       <form id="searchForm">
         <label class="sr-only" for="query">Pesquisar conhecimento</label>
@@ -47,14 +47,6 @@
         <button type="button" data-q="Geografia">Geografia</button>
       </nav>
     </div>
-    <div class="ai-control">
-      <div class="ai-symbol" aria-hidden="true">✦</div>
-      <div class="ai-copy">
-        <strong>Roteador de IA local</strong>
-        <span id="aiState" aria-live="polite">Desativado. A pesquisa normal não carrega o modelo.</span>
-      </div>
-      <button id="aiButton" type="button">Ativar IA local</button>
-    </div>
   </section>
   <section class="source-strip" aria-label="Fontes do Humanitas">
     <div class="source-intro">
@@ -69,6 +61,21 @@
     </div>
   </section>
   <section id="analysis" class="analysis hidden" aria-live="polite"></section>
+  <section class="chat-section" aria-label="Chat Humanitas">
+    <div class="chat-heading">
+      <div><div class="eyebrow"><span></span> Assistente de pesquisa</div><h2>Converse com as referências</h2></div>
+      <span class="cloud-badge">Gemma Cloud</span>
+    </div>
+    <div id="chatMessages" class="chat-messages" aria-live="polite">
+      <div class="chat-message assistant"><strong>Humanitas</strong><p>Faça uma pesquisa acima e eu usarei as referências encontradas para responder. Você pode perguntar, por exemplo: “O que Weber entende por ação social?”</p></div>
+    </div>
+    <form id="chatForm" class="chat-form">
+      <label class="sr-only" for="chatInput">Pergunte ao Humanitas</label>
+      <textarea id="chatInput" rows="2" required placeholder="Pergunte sobre o tema pesquisado..."></textarea>
+      <button type="submit">Enviar</button>
+    </form>
+    <p class="chat-note">As respostas devem se basear nas referências recuperadas pelo Humanitas. As fontes usadas aparecem abaixo de cada resposta.</p>
+  </section>
   <section id="results" aria-live="polite"></section>
 </main>
 <footer>
