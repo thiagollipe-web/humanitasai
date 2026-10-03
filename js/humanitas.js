@@ -5,8 +5,6 @@ const results = $("#results");
 const chatMessages = $("#chatMessages");
 const chatForm = $("#chatForm");
 const chatInput = $("#chatInput");
-const aiButton = $("#aiButton");
-const aiState = $("#aiState");
 
 const esc = (x) => String(x ?? "").replace(/[&<>"']/g, (c) => ({
   "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"
@@ -144,7 +142,7 @@ async function search(q) {
     ]);
 
     const items = r.flatMap(x => x.status === "fulfilled" ? x.value : []);
-    var ranked=rank(items, query); currentReferences=referenceData(ranked); render(ranked);
+    var ranked=rank(items, query); currentReferences=referenceData(ranked); chatHistory=[]; previousInteractionId=null; render(ranked);
     status.textContent = `Pesquisa concluída • ${items.length} resultados`;
   } catch (error) {
     console.error(error);
@@ -156,6 +154,7 @@ async function search(q) {
 
 let currentReferences=[];
 let previousInteractionId=null;
+let chatHistory=[];
 
 function referenceData(items){
   return items.slice(0,16).map(function(x,i){
@@ -193,13 +192,17 @@ async function askHumanitas(question){
     var response=await fetch("/api/chat",{
       method:"POST",
       headers:{"Content-Type":"application/json"},
-      body:JSON.stringify({question:question,references:currentReferences,previousInteractionId:previousInteractionId})
+      body:JSON.stringify({question:question,references:currentReferences,history:chatHistory})
     });
     var data=await response.json();
     loading.remove();
     if(!response.ok)throw Error(data.error||"Falha na IA cloud.");
     previousInteractionId=data.interactionId||previousInteractionId;
-    addMessage("assistant",data.answer||"Não foi possível obter uma resposta.",currentReferences);
+    var answer=data.answer||"Não foi possível obter uma resposta.";
+    addMessage("assistant",answer,currentReferences);
+    chatHistory.push({role:"user",content:question});
+    chatHistory.push({role:"assistant",content:answer});
+    chatHistory=chatHistory.slice(-10);
     status.textContent="Resposta concluída";
   }catch(error){
     loading.remove();
