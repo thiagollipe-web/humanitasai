@@ -2,6 +2,9 @@ const $ = (s) => document.querySelector(s);
 const status = $("#status");
 const analysis = $("#analysis");
 const results = $("#results");
+const chatMessages = $("#chatMessages");
+const chatForm = $("#chatForm");
+const chatInput = $("#chatInput");
 const aiButton = $("#aiButton");
 const aiState = $("#aiState");
 
