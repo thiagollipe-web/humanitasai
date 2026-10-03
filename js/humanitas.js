@@ -141,7 +141,7 @@ async function search(q) {
     ]);
 
     const items = r.flatMap(x => x.status === "fulfilled" ? x.value : []);
-    render(rank(items, query));
+    var ranked=rank(items, query); currentReferences=referenceData(ranked); render(ranked);
     status.textContent = `Pesquisa concluída • ${items.length} resultados`;
   } catch (error) {
     console.error(error);
@@ -150,82 +150,75 @@ async function search(q) {
   }
 }
 
-let routeCommand = null;
-let aiEnabled = false;
 
-async function enableLocalAI() {
-  if (aiEnabled) return;
+let currentReferences=[];
+let previousInteractionId=null;
 
-  aiButton.disabled = true;
-  aiButton.textContent = "Carregando IA local...";
-  aiState.textContent = "Primeira carga: o modelo pode ocupar cerca de 117 MB.";
-  status.textContent = "Carregando roteador local...";
+function referenceData(items){
+  return items.slice(0,16).map(function(x,i){
+    return {n:i+1,source:x.source,type:x.type,title:x.title,description:x.description,url:safeUrl(x.url),doi:x.doi||""};
+  });
+}
 
-  try {
-    ({ routeCommand } = await import("./ai/router.js"));
-    await routeCommand("teste", (p) => {
-      if (p?.status === "fallback") aiState.textContent = "WebGPU indisponível; usando CPU/WASM.";
-      else if (p?.status === "loading") aiState.textContent = `Carregando modelo local • ${p.device || "CPU"}`;
-      else if (p?.status === "ready") aiState.textContent = `IA local pronta • ${p.device} • ${p.dtype}`;
+function addMessage(role,text,references){
+  references=references||[];
+  var box=document.createElement("div");
+  box.className="chat-message "+role;
+  var label=role==="user"?"Você":"Humanitas";
+  box.innerHTML="<strong>"+label+"</strong><p>"+esc(text).replace(/\n/g,"<br>")+"</p>";
+  if(role==="assistant"&&references.length){
+    var refs=document.createElement("div");
+    refs.className="chat-references";
+    refs.innerHTML="<strong>Referências utilizadas</strong>"+references.map(function(r){
+      return '<a href="'+esc(safeUrl(r.url))+'" target="_blank" rel="noopener noreferrer">['+r.n+'] '+esc(r.title)+' <small>• '+esc(r.source)+'</small></a>';
+    }).join("");
+    box.appendChild(refs);
+  }
+  chatMessages.appendChild(box);
+  chatMessages.scrollTop=chatMessages.scrollHeight;
+  return box;
+}
+
+async function askHumanitas(question){
+  if(!currentReferences.length){
+    addMessage("assistant","Faça primeiro uma pesquisa. Assim o Humanitas terá referências para fundamentar a conversa.");
+    return;
+  }
+  var loading=addMessage("assistant","Consultando as referências...");
+  status.textContent="Consultando IA cloud...";
+  try{
+    var response=await fetch("/api/chat",{
+      method:"POST",
+      headers:{"Content-Type":"application/json"},
+      body:JSON.stringify({question:question,references:currentReferences,previousInteractionId:previousInteractionId})
     });
-    aiEnabled = true;
-    aiButton.textContent = "IA local ativa";
-    aiState.textContent = "Roteador local ativo. O modelo não fornece fontes acadêmicas.";
-    status.textContent = "IA local pronta";
-  } catch (error) {
-    console.error(error);
-    aiButton.disabled = false;
-    aiButton.textContent = "Ativar IA local";
-    aiState.textContent = "Não foi possível carregar o modelo. Verifique a conexão na primeira execução.";
-    status.textContent = "Falha na IA local";
+    var data=await response.json();
+    loading.remove();
+    if(!response.ok)throw Error(data.error||"Falha na IA cloud.");
+    previousInteractionId=data.interactionId||previousInteractionId;
+    addMessage("assistant",data.answer||"Não foi possível obter uma resposta.",currentReferences);
+    status.textContent="Resposta concluída";
+  }catch(error){
+    loading.remove();
+    addMessage("assistant","Não foi possível responder agora: "+error.message);
+    status.textContent="Erro na IA cloud";
   }
 }
 
-async function handleCommand(input) {
-  if (!aiEnabled || !routeCommand) return search(input);
+$("#searchForm").addEventListener("submit",function(e){e.preventDefault();search($("#query").value)});
+document.querySelectorAll("[data-q]").forEach(function(b){b.onclick=function(){$("#query").value=b.dataset.q;search(b.dataset.q)}});
 
-  status.textContent = "Interpretando comando local...";
-  try {
-    const routed = await routeCommand(input, (p) => {
-      if (p?.status === "loading") status.textContent = "Modelo local carregando...";
-      if (p?.status === "ready") status.textContent = "Comando interpretado localmente";
-    });
-
-    if (routed.intent === "SEARCH" || routed.intent === "FILTER") {
-      const q = routed.query || input;
-      $("#query").value = q;
-      return search(q);
-    }
-
-    if (routed.intent === "HELP") {
-      results.innerHTML = '<div class="card"><b>Ajuda</b><p>Digite um assunto para pesquisar nas fontes Humanitas. O roteador local apenas interpreta o comando.</p></div>';
-      status.textContent = "Ajuda";
-      return;
-    }
-
-    results.innerHTML = `<div class="card"><b>Comando reconhecido</b><p>${esc(routed.intent)}. Esta ação ainda não está habilitada pela interface.</p></div>`;
-    status.textContent = "Comando não executado";
-  } catch (error) {
-    console.error(error);
-    status.textContent = "Falha no roteador; pesquisa direta usada";
-    search(input);
-  }
-}
-
-$("#searchForm").addEventListener("submit", (e) => {
+chatForm.addEventListener("submit",async function(e){
   e.preventDefault();
-  handleCommand($("#query").value);
+  var question=chatInput.value.trim();
+  if(!question)return;
+  chatInput.value="";
+  addMessage("user",question);
+  await askHumanitas(question);
 });
-
-document.querySelectorAll("[data-q]").forEach(b => {
-  b.onclick = () => {
-    $("#query").value = b.dataset.q;
-    handleCommand(b.dataset.q);
-  };
+chatInput.addEventListener("keydown",function(e){
+  if(e.key==="Enter"&&!e.shiftKey){e.preventDefault();chatForm.requestSubmit();}
 });
-
-aiButton.addEventListener("click", enableLocalAI);
-
 if ("serviceWorker" in navigator) {
   navigator.serviceWorker.register("./service-worker.js").catch(console.warn);
 }
