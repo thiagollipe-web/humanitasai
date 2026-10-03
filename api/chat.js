@@ -1,4 +1,4 @@
-const MODEL = process.env.OLLAMA_MODEL || "gemma4:31b";
+const MODEL = process.env.OLLAMA_MODEL || "gemma4:31b-cloud";
 
 export default async function handler(req, res) {
   if (req.method !== "POST") return res.status(405).json({ error: "Método não permitido." });
