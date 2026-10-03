@@ -7,21 +7,28 @@ Sistema de Conhecimento em Ciências Humanas.
 - HTML/CSS: interface PWA.
 - JavaScript: pesquisa, integração, ranking e execução controlada de comandos.
 - PyScript/Python: análise linguística local.
-- SmolLM2-135M-Instruct: roteador SLM local opcional no navegador.
+- Gemma 4 26B A4B IT: chat cloud de pesquisa, executado por uma função serverless na Vercel.
 - Fontes: Wikimedia, Wikidata, OpenAlex e Crossref.
 
 O SLM não é usado para gerar respostas acadêmicas nem referências. Ele apenas transforma comandos em intenções estruturadas; a aplicação decide quais ações permitidas podem ser executadas.
 
-## IA local
+## Chat com referências
 
-O Humanitas usa Transformers.js 4.0.1 e o modelo ONNX
-`onnx-community/SmolLM2-135M-Instruct-ONNX`.
+O Humanitas pesquisa primeiro em Wikimedia, Wikidata, OpenAlex e Crossref. Os resultados são enviados como contexto documental para o chat cloud.
 
-- WebGPU: tenta `q4f16` e depois `q4`.
-- CPU/WASM: usa `q4`.
-- O modelo é baixado na primeira ativação e pode ser reutilizado pelo cache do navegador.
-- A primeira carga exige conexão; as pesquisas acadêmicas continuam dependendo das APIs externas.
-- O navegador pode remover dados de cache; portanto, o projeto não promete armazenamento permanente do modelo.
+O chat usa o modelo `gemma-4-26b-a4b-it` pela API Gemini. A chave da API não fica no navegador nem no repositório: a função `api/chat.js` lê `GEMINI_API_KEY` como variável de ambiente da Vercel.
+
+O chat solicita que as respostas indiquem as referências utilizadas com marcadores como `[1]`, `[2]` e assim por diante. As referências também são exibidas como links abaixo da resposta.
+
+### Configuração da Vercel
+
+Crie a variável de ambiente:
+
+```text
+GEMINI_API_KEY=sua_chave_do_google_ai_studio
+```
+
+Depois faça um novo deploy.
 
 ## Publicação
 
