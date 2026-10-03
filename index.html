@@ -1,0 +1,22 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#111827">
+<link rel="manifest" href="manifest.json"><link rel="stylesheet" href="css/humanitas.css">
+<title>Humanitas</title>
+<script type="module" src="https://pyscript.net/releases/2026.1.1/core.js"></script>
+</head>
+<body>
+<header><div class="brand"><b>H</b><div><strong>Humanitas</strong><small>Sistema de Conhecimento em Ciências Humanas</small></div></div><span id="status">Pronto</span></header>
+<main>
+<section class="hero"><h1>Pesquisar conhecimento</h1><p>Pesquisa baseada em fontes, sem geração de conteúdo por modelo de linguagem.</p>
+<form id="searchForm"><div class="search"><input id="query" required placeholder="Ex.: ação social em Max Weber"><button>Pesquisar</button></div></form>
+<nav id="chips"><button type="button" data-q="Sociologia">Sociologia</button><button type="button" data-q="Filosofia">Filosofia</button><button type="button" data-q="História">História</button><button type="button" data-q="Ciência Política">Ciência Política</button><button type="button" data-q="Antropologia">Antropologia</button><button type="button" data-q="Geografia">Geografia</button></nav>
+</section>
+<section id="analysis" class="analysis hidden"></section><section id="results"></section>
+</main>
+<footer>Humanitas • GitHub Pages • PWA • Wikimedia • Wikidata • OpenAlex • Crossref</footer>
+<script type="module" src="js/humanitas.js"></script>
+<script type="py" src="./python/humanitas.py"></script>
+</body></html>
